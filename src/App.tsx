@@ -1,24 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { getQuizDetails } from './services/quiz_services'
+import { QuestionType, Quiz } from './Types/quiz_types'
+import QustionCard from './components/QuestionCard'
 
 function App() {
+
+  let [quiz, setquiz] = useState<QuestionType[]>([])
+  let [currentStep, setCurrentStep] = useState(0)
+  let [score, setScore] = useState(0)
+  let [showResult, setShowResult] = useState(false)
+
+  useEffect(() => {
+
+    async function fetchData() {
+
+      const questions: QuestionType[] = await getQuizDetails(5, 'easy');
+      console.log(questions)
+      setquiz(questions)
+    }
+    fetchData();
+
+  }, [])
+
+  const handleSubmit = (e: React.FormEvent<EventTarget>, userAns: string) => {
+    e.preventDefault();
+
+    const currentQuestion: QuestionType = quiz[currentStep]
+
+    console.log("correct ans: " + currentQuestion.correct_answer + "--user Selection :" + userAns)
+
+
+    if (userAns === currentQuestion.correct_answer) {
+
+      setScore(++score)
+    }
+
+    if (currentStep !== quiz.length - 1)
+      setCurrentStep(++currentStep)
+    else {
+      // alert(" YOUR FINAL SCORE IS : " + score + "OUT OF : " + quiz.length)
+      setShowResult(true)
+    }
+  }
+
+  if (!quiz.length)
+    return <h3>Looding ..</h3>
+  if (showResult) {
+    return (
+      <div className={"question_Container result-container"}>
+        <h1>Result</h1>
+        <p>YOUR FINAL SCORE IS
+           <b>  {score}</b> OUT OF  <b>{quiz.length}</b>
+        </p>
+      </div>
+    )
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <h1>Quiz App</h1>
+      <QustionCard
+
+        options={quiz[currentStep].option}
+        question={quiz[currentStep].question}
+        callback={handleSubmit}
+
+      />
     </div>
   );
 }
