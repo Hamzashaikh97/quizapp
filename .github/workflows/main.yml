@@ -32,4 +32,4 @@ jobs:
     - name: installing Surge
       run : npm install -g surge
     - name : Deploying  on Surge 
-      run: surge ./build known-jam.surge.sh --token ${{secrets.TOKEN}} 
+      run: surge ./ known-jam.surge.sh --token ${{secrets.TOKEN}} 
