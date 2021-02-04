@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { getQuizDetails } from './services/quiz_services'
-import { QuestionType, Quiz } from './Types/quiz_types'
+import { QuestionType,  } from './Types/quiz_types'
 import QustionCard from './components/QuestionCard'
 
 function App() {
